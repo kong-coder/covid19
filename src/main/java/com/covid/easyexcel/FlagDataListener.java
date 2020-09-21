@@ -1,4 +1,4 @@
-package com.sqkb.product.price.covid.easyexcel;
+package com.covid.easyexcel;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;

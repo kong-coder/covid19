@@ -1,4 +1,4 @@
-package com.sqkb.product.price.covid.easyexcel;
+package com.covid.easyexcel;
 
 
 import com.alibaba.excel.EasyExcel;
@@ -6,11 +6,10 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
+import com.covid.CountryUtil;
+import com.covid.UsDataImport;
 import com.google.common.collect.Lists;
-import com.sqkb.product.price.covid.CountryUtil;
-import com.sqkb.product.price.covid.DateUtil;
-import com.sqkb.product.price.covid.UsDataImport;
-import com.sqkb.product.price.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,12 +92,12 @@ public class MalitiryService {
                     return;
                 }
 
-                if (StringUtil.isBlank(pair.left)) {
+                if (StringUtils.isBlank(pair.left)) {
                     LOG.error("code:{}, countryName:{}", code, pair.left);
                     return;
                 }
 
-                if (StringUtil.isBlank(pair.right)) {
+                if (StringUtils.isBlank(pair.right)) {
                     LOG.error("code:{}, countryName:{}, flag:{}", code, pair.left, pair.right);
                 }
 

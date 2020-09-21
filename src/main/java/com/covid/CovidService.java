@@ -1,4 +1,4 @@
-package com.sqkb.product.price.covid;
+package com.covid;
 
 
 import com.alibaba.excel.EasyExcelFactory;
@@ -8,12 +8,11 @@ import com.alibaba.excel.metadata.Table;
 import com.excel.poi.ExcelBoot;
 import com.excel.poi.entity.ErrorEntity;
 import com.excel.poi.function.ImportFunction;
-import com.sqkb.product.price.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -112,7 +111,7 @@ public class CovidService {
                 // 第 n 行的数据
                 List<Object> row = new ArrayList<>();
                 String stateName = CountryUtil.get(k);
-                if (StringUtil.isBlank(stateName) || stateName.contains("台湾")) {
+                if (StringUtils.isBlank(stateName) || stateName.contains("台湾")) {
                     LOG.info("k:{}, stateName:{}", k, stateName);
                     return;
                 }

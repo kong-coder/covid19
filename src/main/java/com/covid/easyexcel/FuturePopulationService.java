@@ -1,15 +1,15 @@
-package com.sqkb.product.price.covid.easyexcel;
+package com.covid.easyexcel;
 
 
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
+import com.covid.CountryUtil;
 import com.excel.poi.ExcelBoot;
 import com.excel.poi.entity.ErrorEntity;
 import com.excel.poi.function.ImportFunction;
-import com.sqkb.product.price.covid.*;
-import com.sqkb.product.price.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -103,7 +102,7 @@ public class FuturePopulationService {
                 // 第 n 行的数据
                 List<Object> row = new ArrayList<>();
                 String countryName = CountryUtil.get(k);
-                if (StringUtil.isBlank(countryName)) {
+                if (StringUtils.isBlank(countryName)) {
                     LOG.error("no country mapping, k:{}", k);
                     return;
                 }

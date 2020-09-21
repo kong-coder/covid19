@@ -1,4 +1,4 @@
-package com.sqkb.product.price.covid;
+package com.covid;
 
 import com.excel.poi.annotation.ImportField;
 import lombok.Data;

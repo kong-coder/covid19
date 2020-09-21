@@ -1,4 +1,4 @@
-package com.sqkb.product.price.covid.easyexcel;
+package com.covid.easyexcel;
 
 import com.alibaba.excel.EasyExcel;
 import org.slf4j.Logger;

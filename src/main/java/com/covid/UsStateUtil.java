@@ -1,4 +1,4 @@
-package com.sqkb.product.price.covid;
+package com.covid;
 
 import com.google.common.collect.Maps;
 

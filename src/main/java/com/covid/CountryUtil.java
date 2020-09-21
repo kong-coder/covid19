@@ -1,8 +1,7 @@
-package com.sqkb.product.price.covid;
+package com.covid;
 
 import com.alibaba.excel.EasyExcel;
-import com.sqkb.product.price.covid.easyexcel.FlagDataListener;
-import com.sqkb.product.price.covid.easyexcel.NoModelDataListener;
+import com.covid.easyexcel.FlagDataListener;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.HashMap;
@@ -60,7 +59,7 @@ public class CountryUtil {
 
     public static void initFlag() {
 
-        String fileName = "/Users/yanhom/Desktop/flags.xlsx";
+        String fileName = "/Users/mukong/Desktop/covid/flags.xlsx";
 
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
         EasyExcel.read(fileName, new FlagDataListener()).sheet().doRead();

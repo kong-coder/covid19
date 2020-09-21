@@ -1,4 +1,4 @@
-package com.sqkb.product.price.covid;
+package com.covid;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;

@@ -1,4 +1,4 @@
-package com.sqkb.product.price.covid.easyexcel;
+package com.covid.easyexcel;
 
 import java.io.File;
 import java.io.InputStream;

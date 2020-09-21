@@ -1,4 +1,4 @@
-package com.sqkb.product.price.covid.easyexcel;
+package com.covid.easyexcel;
 
 
 import com.alibaba.excel.EasyExcel;
@@ -6,31 +6,21 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
-import com.excel.poi.ExcelBoot;
-import com.excel.poi.entity.ErrorEntity;
-import com.excel.poi.function.ImportFunction;
+import com.covid.CountryUtil;
+import com.covid.DateUtil;
+import com.covid.UsDataImport;
 import com.google.common.collect.Lists;
-import com.sqkb.product.price.covid.*;
-import com.sqkb.product.price.util.StringUtil;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toMap;
+import javax.annotation.PostConstruct;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 /**
  * @author mukong
@@ -104,12 +94,12 @@ public class WorldCovidService {
                     return;
                 }
 
-                if (StringUtil.isBlank(pair.left)) {
+                if (StringUtils.isBlank(pair.left)) {
                    // LOG.error("code:{}, countryName:{}", code, pair.left);
                     return;
                 }
 
-                if (StringUtil.isBlank(pair.right)) {
+                if (StringUtils.isBlank(pair.right)) {
                     LOG.error("code:{}, countryName:{}, flag:{}", code, pair.left, pair.right);
                 }
 

@@ -1,4 +1,4 @@
-package com.sqkb.product.price.covid;
+package com.covid;
 
 
 import com.alibaba.excel.EasyExcelFactory;
@@ -8,7 +8,7 @@ import com.alibaba.excel.metadata.Table;
 import com.excel.poi.ExcelBoot;
 import com.excel.poi.entity.ErrorEntity;
 import com.excel.poi.function.ImportFunction;
-import com.sqkb.product.price.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,22 +49,22 @@ public class UsCovidService {
 
         try{
             ExcelBoot
-                    .ImportBuilder(new FileInputStream(new File("/Users/yanhom/Desktop/us.xlsx")), UsDataImport.class)
-                    .importExcel(new ImportFunction<UsDataImport>() {
+                .ImportBuilder(new FileInputStream(new File("/Users/mukong/Desktop/covid/us.xlsx")), UsDataImport.class)
+                .importExcel(new ImportFunction<UsDataImport>() {
 
-                        @Override
-                        public void onProcess(int sheetIndex,  int rowIndex, UsDataImport usDataImport) {
-                            usDataImportList.add(usDataImport);
-                        }
+                    @Override
+                    public void onProcess(int sheetIndex,  int rowIndex, UsDataImport usDataImport) {
+                        usDataImportList.add(usDataImport);
+                    }
 
-                        /**
-                         * @param errorEntity 错误信息实体
-                         */
-                        @Override
-                        public void onError(ErrorEntity errorEntity) {
-                            System.out.println(errorEntity);
-                        }
-                    });
+                    /**
+                     * @param errorEntity 错误信息实体
+                     */
+                    @Override
+                    public void onError(ErrorEntity errorEntity) {
+                        System.out.println(errorEntity);
+                    }
+                });
         } catch (Exception e) {
             LOG.error("load error", e);
         }
@@ -74,7 +74,7 @@ public class UsCovidService {
 
     private static List<String> getHeader() {
 
-        LocalDate start = LocalDate.of(2020, 1, 22);
+        LocalDate start = LocalDate.of(2020, 2, 25);
         LocalDate end = LocalDate.of(2020, 9, 20);
 
         List<String> headers = new ArrayList<>();
@@ -88,7 +88,7 @@ public class UsCovidService {
 
     private static List<Integer> getIntegerHeader() {
 
-        LocalDate start = LocalDate.of(2020, 1, 22);
+        LocalDate start = LocalDate.of(2020, 2, 25);
         LocalDate end = LocalDate.of(2020, 9, 20);
 
         List<Integer> headers = new ArrayList<>();
@@ -102,7 +102,7 @@ public class UsCovidService {
     public static void export(){
 
         // 文件输出位置
-        String outPath = "/Users/yanhom/Desktop/export.xlsx";
+        String outPath = "/Users/mukong/Desktop/covid/export.xlsx";
 
         try {
             // 所有行的集合
@@ -167,7 +167,7 @@ public class UsCovidService {
             List<Object> row = new ArrayList<>();
             String stateName = UsStateUtil.getStateName(k);
             LOG.info("k:{}, stateName:{}", k, stateName);
-            if (StringUtil.isEmpty(stateName)) {
+            if (StringUtils.isEmpty(stateName)) {
                 return;
             }
             row.add(stateName);
