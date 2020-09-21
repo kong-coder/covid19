@@ -42,7 +42,7 @@ public class IndiaCovidService {
     public static void init() {
         importDataList = new ArrayList<>();
         initData();
-        preExport();
+        //preExport();
     }
 
     public static void main(String[] args) {
@@ -82,8 +82,11 @@ public class IndiaCovidService {
 
     private static List<String> getHeader() {
 
-        LocalDate start = LocalDate.of(2020, 2, 25);
-        LocalDate end = LocalDate.of(2020, 9, 20);
+//        LocalDate start = LocalDate.of(2020, 2, 25);
+//        LocalDate end = LocalDate.of(2020, 9, 20);
+
+        LocalDate start = LocalDate.of(2019, 12, 30);
+        LocalDate end = LocalDate.of(2020, 9, 21);
 
         List<String> headers = new ArrayList<>();
         headers.add("state");
@@ -97,8 +100,8 @@ public class IndiaCovidService {
 
     private static List<Integer> getIntegerHeader() {
 
-        LocalDate start = LocalDate.of(2020, 2, 25);
-        LocalDate end = LocalDate.of(2020, 9, 20);
+        LocalDate start = LocalDate.of(2019, 12, 30);
+        LocalDate end = LocalDate.of(2020, 9, 21);
 
         List<Integer> headers = new ArrayList<>();
         do {
@@ -184,13 +187,19 @@ public class IndiaCovidService {
         groupBy.forEach((k, v) -> {
             // 第 n 行的数据
             List<Object> row = new ArrayList<>();
-            String stateName = UsStateUtil.getStateName(k);
+            String stateName = IndiaStateUtil.getStateName(k);
             LOG.info("k:{}, stateName:{}", k, stateName);
+            if (StringUtils.isEmpty(stateName)) {
+                return;
+            }
             row.add(stateName);
 
+            ImmutablePair<String, String> pair = CountryUtil.getTwo("India");
+            row.add(pair.getRight());
+
             Map<String, ImportData> dataMap = v.stream().collect(toMap(ImportData::getDate, Function.identity()));
-            getHeader().forEach(x -> {
-                ImportData importData = dataMap.get(x);
+            getIntegerHeader().forEach(x -> {
+                ImportData importData = dataMap.get(x.toString());
                 if (importData != null && importData.getNumber() != null) {
                     row.add(importData.getNumber());
                 } else {

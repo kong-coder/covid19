@@ -9,6 +9,8 @@ import com.alibaba.excel.metadata.Table;
 import com.covid.CountryUtil;
 import com.covid.DateUtil;
 import com.covid.ImportData;
+import com.covid.IndiaCovidService;
+import com.covid.UsCovidService;
 import com.google.common.collect.Lists;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -45,13 +47,15 @@ public class WorldCovidService {
     public static void main(String[] args) {
         importDataList = new ArrayList<>();
         initData();
+        UsCovidService.init();
+        IndiaCovidService.init();
         CountryUtil.initCountry();
         export();
     }
 
     public static void initData() {
 
-        String fileName = "/Users/yanhom/Desktop/new-death-9-9.xlsx";
+        String fileName = "/Users/mukong/Desktop/covid/all-total.xlsx";
 
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
         EasyExcel.read(fileName, new NoModelDataListener()).sheet().doRead();
@@ -60,7 +64,7 @@ public class WorldCovidService {
     private static List<String> getHeader() {
 
         LocalDate start = LocalDate.of(2019, 12, 30);
-        LocalDate end = LocalDate.of(2020, 9, 9);
+        LocalDate end = LocalDate.of(2020, 9, 21);
 
         List<String> headers = new ArrayList<>();
         headers.add("state");
@@ -75,7 +79,7 @@ public class WorldCovidService {
     public static void export(){
 
         // 文件输出位置
-        String outPath = "/Users/yanhom/Desktop/export-total-9-9.xlsx";
+        String outPath = "/Users/mukong/Desktop/covid/all-total-export.xlsx";
 
         try {
             // 所有行的集合
@@ -110,7 +114,8 @@ public class WorldCovidService {
                 list.add(row);
             });
 
-           // list.addAll(CovidService.preExport());
+            list.addAll(UsCovidService.preExport());
+            list.addAll(IndiaCovidService.preExport());
 
             ExcelWriter excelWriter = EasyExcelFactory.getWriter(new FileOutputStream(outPath));
             // 表单

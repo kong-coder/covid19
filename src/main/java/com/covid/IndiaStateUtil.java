@@ -93,7 +93,7 @@ public class IndiaStateUtil {
         stateMap.put("State Unassigned", "其他地区");
         stateMap.put("UN", "其他地区");
 
-        stateMap.put("India", "印度");
+       // stateMap.put("India", "印度");
 
     }
 
