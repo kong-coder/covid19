@@ -7,7 +7,7 @@ import lombok.Data;
  * @author mukong
  */
 @Data
-public class UsDataImport {
+public class ImportData {
 
     @ImportField(required = true)
     private String date;
@@ -16,5 +16,5 @@ public class UsDataImport {
     private String state;
 
     @ImportField
-    private Integer positiveIncrease;
+    private Integer number;
 }

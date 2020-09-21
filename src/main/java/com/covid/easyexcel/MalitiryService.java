@@ -7,7 +7,7 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
 import com.covid.CountryUtil;
-import com.covid.UsDataImport;
+import com.covid.ImportData;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -29,20 +29,20 @@ public class MalitiryService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MalitiryService.class);
 
-    private static List<UsDataImport> usDataImportList;
+    private static List<ImportData> importDataList;
 
     private static final List<String> filter = Lists.newArrayList("International");
 
     @PostConstruct
     public void init() {
-        usDataImportList = new ArrayList<>();
+        importDataList = new ArrayList<>();
         initData();
         CountryUtil.initCountry();
         export();
     }
 
     public static void main(String[] args) {
-        usDataImportList = new ArrayList<>();
+        importDataList = new ArrayList<>();
         initData();
         CountryUtil.initCountry();
         export();
@@ -55,7 +55,7 @@ public class MalitiryService {
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
         EasyExcel.read(fileName, new NoModelDataListener()).sheet().doRead();
 
-        System.out.println(usDataImportList.size());
+        System.out.println(importDataList.size());
     }
 
     private static List<String> getHeader() {

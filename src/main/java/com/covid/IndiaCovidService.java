@@ -36,17 +36,17 @@ public class IndiaCovidService {
 
     private static final Logger LOG = LoggerFactory.getLogger(IndiaCovidService.class);
 
-    private static List<UsDataImport> usDataImportList;
+    private static List<ImportData> importDataList;
 
     @PostConstruct
     public static void init() {
-        usDataImportList = new ArrayList<>();
+        importDataList = new ArrayList<>();
         initData();
         preExport();
     }
 
     public static void main(String[] args) {
-        usDataImportList = new ArrayList<>();
+        importDataList = new ArrayList<>();
         initData();
         CountryUtil.initCountry();
         UsCovidService.init();
@@ -57,12 +57,12 @@ public class IndiaCovidService {
 
         try{
             ExcelBoot
-                .ImportBuilder(new FileInputStream(new File("/Users/mukong/Desktop/covid/india.xlsx")), UsDataImport.class)
-                .importExcel(new ImportFunction<UsDataImport>() {
+                .ImportBuilder(new FileInputStream(new File("/Users/mukong/Desktop/covid/india.xlsx")), ImportData.class)
+                .importExcel(new ImportFunction<ImportData>() {
 
                     @Override
-                    public void onProcess(int sheetIndex,  int rowIndex, UsDataImport usDataImport) {
-                        usDataImportList.add(usDataImport);
+                    public void onProcess(int sheetIndex,  int rowIndex, ImportData importData) {
+                        importDataList.add(importData);
                     }
 
                     /**
@@ -77,7 +77,7 @@ public class IndiaCovidService {
             LOG.error("load error", e);
         }
 
-        System.out.println(usDataImportList.size());
+        System.out.println(importDataList.size());
     }
 
     private static List<String> getHeader() {
@@ -117,7 +117,8 @@ public class IndiaCovidService {
             // 所有行的集合
             List<List<Object>> list = new ArrayList<>();
 
-            Map<String, List<UsDataImport>> groupBy = usDataImportList.stream().collect(groupingBy(UsDataImport::getState));
+            Map<String, List<ImportData>> groupBy = importDataList
+                .stream().collect(groupingBy(ImportData::getState));
             groupBy.forEach((k, v) -> {
                 // 第 n 行的数据
                 List<Object> row = new ArrayList<>();
@@ -131,11 +132,11 @@ public class IndiaCovidService {
                 ImmutablePair<String, String> pair = CountryUtil.getTwo("India");
                 row.add(pair.getRight());
 
-                Map<String, UsDataImport> dataMap = v.stream().collect(toMap(UsDataImport::getDate, Function.identity()));
+                Map<String, ImportData> dataMap = v.stream().collect(toMap(ImportData::getDate, Function.identity()));
                 getIntegerHeader().forEach(x -> {
-                    UsDataImport usDataImport = dataMap.get(x.toString());
-                    if (usDataImport != null && usDataImport.getPositiveIncrease() != null) {
-                        row.add(usDataImport.getPositiveIncrease());
+                    ImportData importData = dataMap.get(x.toString());
+                    if (importData != null && importData.getNumber() != null) {
+                        row.add(importData.getNumber());
                     } else {
                         row.add(0);
                     }
@@ -178,7 +179,8 @@ public class IndiaCovidService {
         // 所有行的集合
         List<List<Object>> list = new ArrayList<>();
 
-        Map<String, List<UsDataImport>> groupBy = usDataImportList.stream().collect(groupingBy(UsDataImport::getState));
+        Map<String, List<ImportData>> groupBy = importDataList
+            .stream().collect(groupingBy(ImportData::getState));
         groupBy.forEach((k, v) -> {
             // 第 n 行的数据
             List<Object> row = new ArrayList<>();
@@ -186,11 +188,11 @@ public class IndiaCovidService {
             LOG.info("k:{}, stateName:{}", k, stateName);
             row.add(stateName);
 
-            Map<String, UsDataImport> dataMap = v.stream().collect(toMap(UsDataImport::getDate, Function.identity()));
+            Map<String, ImportData> dataMap = v.stream().collect(toMap(ImportData::getDate, Function.identity()));
             getHeader().forEach(x -> {
-                UsDataImport usDataImport = dataMap.get(x);
-                if (usDataImport != null && usDataImport.getPositiveIncrease() != null) {
-                    row.add(usDataImport.getPositiveIncrease());
+                ImportData importData = dataMap.get(x);
+                if (importData != null && importData.getNumber() != null) {
+                    row.add(importData.getNumber());
                 } else {
                     row.add(0);
                 }

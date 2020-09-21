@@ -50,8 +50,6 @@ public class UsStateUtil {
         stateMap.put("OH", "俄亥俄州(美)");
         stateMap.put("OK", "俄克拉荷马州(美)");
         stateMap.put("OR", "俄勒冈州(美)");
-
-
         stateMap.put("PA", "宾夕法尼亚州(美)");
         stateMap.put("RI", "罗得岛州(美)");
         stateMap.put("SC", "南卡罗来纳州(美)");

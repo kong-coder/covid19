@@ -8,7 +8,7 @@ import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
 import com.covid.CountryUtil;
 import com.covid.DateUtil;
-import com.covid.UsDataImport;
+import com.covid.ImportData;
 import com.google.common.collect.Lists;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -30,20 +30,20 @@ public class WorldCovidService {
 
     private static final Logger LOG = LoggerFactory.getLogger(WorldCovidService.class);
 
-    private static List<UsDataImport> usDataImportList;
+    private static List<ImportData> importDataList;
 
     private static final List<String> filter = Lists.newArrayList("International");
 
     @PostConstruct
     public void init() {
-        usDataImportList = new ArrayList<>();
+        importDataList = new ArrayList<>();
         initData();
         CountryUtil.initCountry();
         export();
     }
 
     public static void main(String[] args) {
-        usDataImportList = new ArrayList<>();
+        importDataList = new ArrayList<>();
         initData();
         CountryUtil.initCountry();
         export();
