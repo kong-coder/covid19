@@ -6,11 +6,7 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
-import com.covid.CountryUtil;
-import com.covid.DateUtil;
-import com.covid.ImportData;
-import com.covid.IndiaCovidService;
-import com.covid.UsCovidService;
+import com.covid.*;
 import com.google.common.collect.Lists;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -48,14 +44,14 @@ public class WorldCovidService {
         importDataList = new ArrayList<>();
         initData();
         UsCovidService.init();
-        IndiaCovidService.init();
+        EsayIndiaCovidService.init();
         CountryUtil.initCountry();
         export();
     }
 
     public static void initData() {
 
-        String fileName = "/Users/mukong/Desktop/covid/all-total.xlsx";
+        String fileName = "/Users/yanhom/Desktop/covid/world.xlsx";
 
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
         EasyExcel.read(fileName, new NoModelDataListener()).sheet().doRead();
@@ -64,7 +60,7 @@ public class WorldCovidService {
     private static List<String> getHeader() {
 
         LocalDate start = LocalDate.of(2019, 12, 30);
-        LocalDate end = LocalDate.of(2020, 9, 21);
+        LocalDate end = LocalDate.of(2020, 10, 12);
 
         List<String> headers = new ArrayList<>();
         headers.add("state");
@@ -79,7 +75,7 @@ public class WorldCovidService {
     public static void export(){
 
         // 文件输出位置
-        String outPath = "/Users/mukong/Desktop/covid/all-total-export.xlsx";
+        String outPath = "/Users/yanhom/Desktop/covid/all-total-export.xlsx";
 
         try {
             // 所有行的集合
@@ -115,7 +111,7 @@ public class WorldCovidService {
             });
 
             list.addAll(UsCovidService.preExport());
-            list.addAll(IndiaCovidService.preExport());
+            list.addAll(EsayIndiaCovidService.preExport());
 
             ExcelWriter excelWriter = EasyExcelFactory.getWriter(new FileOutputStream(outPath));
             // 表单

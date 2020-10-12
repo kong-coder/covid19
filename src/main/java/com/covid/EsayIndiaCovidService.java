@@ -1,10 +1,12 @@
 package com.covid;
 
 
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
+import com.covid.easyexcel.IndiaDataListener;
 import com.excel.poi.ExcelBoot;
 import com.excel.poi.entity.ErrorEntity;
 import com.excel.poi.function.ImportFunction;
@@ -32,9 +34,9 @@ import static java.util.stream.Collectors.toMap;
  * @author mukong
  */
 @Service
-public class UsCovidService {
+public class EsayIndiaCovidService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(UsCovidService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EsayIndiaCovidService.class);
 
     private static List<ImportData> importDataList;
 
@@ -42,43 +44,40 @@ public class UsCovidService {
     public static void init() {
         importDataList = new ArrayList<>();
         initData();
-        //preExport();
+        IndiaDataListener.list.forEach(x -> {
+            ImportData importData = new ImportData();
+            importData.setDate(x.get(0));
+            importData.setState(x.get(1));
+            importData.setNumber(Integer.parseInt(x.get(2)));
+            importDataList.add(importData);
+        });
+    }
+
+    public static void main(String[] args) {
+        importDataList = new ArrayList<>();
+        initData();
+        CountryUtil.initCountry();
+        UsCovidService.init();
+        export();
     }
 
     public static void initData() {
-
-        try{
-            ExcelBoot
-                .ImportBuilder(new FileInputStream(new File("/Users/yanhom/Desktop/covid/us-state.xlsx")), ImportData.class)
-                .importExcel(new ImportFunction<ImportData>() {
-
-                    @Override
-                    public void onProcess(int sheetIndex,  int rowIndex, ImportData importData) {
-                        importDataList.add(importData);
-                    }
-
-                    /**
-                     * @param errorEntity 错误信息实体
-                     */
-                    @Override
-                    public void onError(ErrorEntity errorEntity) {
-                        System.out.println(errorEntity);
-                    }
-                });
-        } catch (Exception e) {
-            LOG.error("load error", e);
-        }
-
-        System.out.println(importDataList.size());
+        String indiaFileName = "/Users/yanhom/Desktop/covid/india.xlsx";
+        // 这里 只要，然后读取第一个sheet 同步读取会自动finish
+        EasyExcel.read(indiaFileName, new IndiaDataListener()).sheet().doRead();
     }
 
     private static List<String> getHeader() {
+
+//        LocalDate start = LocalDate.of(2020, 2, 25);
+//        LocalDate end = LocalDate.of(2020, 9, 20);
 
         LocalDate start = LocalDate.of(2019, 12, 30);
         LocalDate end = LocalDate.of(2020, 10, 12);
 
         List<String> headers = new ArrayList<>();
         headers.add("state");
+        headers.add("flag");
         do {
             start = start.plusDays(1);
             headers.add(DateUtil.stringYMD(start));
@@ -113,13 +112,19 @@ public class UsCovidService {
             groupBy.forEach((k, v) -> {
                 // 第 n 行的数据
                 List<Object> row = new ArrayList<>();
-                String stateName = UsStateUtil.getStateName(k);
+                String stateName = IndiaStateUtil.getStateName(k);
                 LOG.info("k:{}, stateName:{}", k, stateName);
+                if (StringUtils.isEmpty(stateName)) {
+                    return;
+                }
                 row.add(stateName);
 
+                ImmutablePair<String, String> pair = CountryUtil.getTwo("India");
+                row.add(pair.getRight());
+
                 Map<String, ImportData> dataMap = v.stream().collect(toMap(ImportData::getDate, Function.identity()));
-                getHeader().forEach(x -> {
-                    ImportData importData = dataMap.get(x);
+                getIntegerHeader().forEach(x -> {
+                    ImportData importData = dataMap.get(x.toString());
                     if (importData != null && importData.getNumber() != null) {
                         row.add(importData.getNumber());
                     } else {
@@ -129,6 +134,8 @@ public class UsCovidService {
                 list.add(row);
             });
 
+            List<List<Object>> lists = UsCovidService.preExport();
+            list.addAll(lists);
             ExcelWriter excelWriter = EasyExcelFactory.getWriter(new FileOutputStream(outPath));
             // 表单
             Sheet sheet = new Sheet(1,0);
@@ -167,14 +174,14 @@ public class UsCovidService {
         groupBy.forEach((k, v) -> {
             // 第 n 行的数据
             List<Object> row = new ArrayList<>();
-            String stateName = UsStateUtil.getStateName(k);
+            String stateName = IndiaStateUtil.getStateName(k);
             LOG.info("k:{}, stateName:{}", k, stateName);
             if (StringUtils.isEmpty(stateName)) {
                 return;
             }
             row.add(stateName);
 
-            ImmutablePair<String, String> pair = CountryUtil.getTwo("United States");
+            ImmutablePair<String, String> pair = CountryUtil.getTwo("India");
             row.add(pair.getRight());
 
             Map<String, ImportData> dataMap = v.stream().collect(toMap(ImportData::getDate, Function.identity()));

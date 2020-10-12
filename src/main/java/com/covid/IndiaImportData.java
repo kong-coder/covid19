@@ -7,10 +7,10 @@ import lombok.Data;
  * @author mukong
  */
 @Data
-public class ImportData {
+public class IndiaImportData {
 
     @ImportField(required = true)
-    private String date;
+    private Integer date;
 
     @ImportField(required = true)
     private String state;
