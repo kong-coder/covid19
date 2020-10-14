@@ -6,28 +6,27 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
-import com.covid.CountryUtil;
-import com.covid.ImportData;
+import com.covid.*;
 import com.google.common.collect.Lists;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author mukong
  */
 @Service
-public class MalitiryService {
+public class WorldVsUsVsIndiaCovidService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MalitiryService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WorldVsUsVsIndiaCovidService.class);
 
     private static List<ImportData> importDataList;
 
@@ -44,36 +43,39 @@ public class MalitiryService {
     public static void main(String[] args) {
         importDataList = new ArrayList<>();
         initData();
+        UsCovidService.init();
+        EsayIndiaCovidService.init();
         CountryUtil.initCountry();
         export();
     }
 
     public static void initData() {
 
-        String fileName = "/Users/yanhom/Desktop/malitiry-spending.xlsx";
+        String fileName = "/Users/yanhom/Desktop/covid/world.xlsx";
 
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
         EasyExcel.read(fileName, new WorldConfirmedDataListener()).sheet().doRead();
-
-        System.out.println(importDataList.size());
     }
 
     private static List<String> getHeader() {
+
+        LocalDate start = LocalDate.of(2019, 12, 30);
+        LocalDate end = LocalDate.of(2020, 10, 12);
+
         List<String> headers = new ArrayList<>();
         headers.add("state");
         headers.add("flag");
-        int year = 1960;
         do {
-            headers.add(String.valueOf(year));
-            year++;
-        } while (year <= 2019);
+            start = start.plusDays(1);
+            headers.add(DateUtil.stringYMD(start));
+        } while (start.isBefore(end));
         return headers;
     }
 
     public static void export(){
 
         // 文件输出位置
-        String outPath = "/Users/yanhom/Desktop/final-malitiry-spending.xlsx";
+        String outPath = "/Users/yanhom/Desktop/covid/all-total-export.xlsx";
 
         try {
             // 所有行的集合
@@ -93,7 +95,7 @@ public class MalitiryService {
                 }
 
                 if (StringUtils.isBlank(pair.left)) {
-                    LOG.error("code:{}, countryName:{}", code, pair.left);
+                   // LOG.error("code:{}, countryName:{}", code, pair.left);
                     return;
                 }
 
@@ -108,7 +110,8 @@ public class MalitiryService {
                 list.add(row);
             });
 
-           // list.addAll(CovidService.preExport());
+            list.addAll(UsCovidService.preExport());
+            list.addAll(EsayIndiaCovidService.preExport());
 
             ExcelWriter excelWriter = EasyExcelFactory.getWriter(new FileOutputStream(outPath));
             // 表单

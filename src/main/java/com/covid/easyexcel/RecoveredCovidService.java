@@ -1,6 +1,7 @@
 package com.covid.easyexcel;
 
 
+import cn.hutool.core.util.NumberUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
@@ -12,11 +13,13 @@ import com.covid.ImportData;
 import com.google.common.collect.Lists;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -50,13 +53,14 @@ public class RecoveredCovidService {
     public static void main(String[] args) {
         importDataList = new ArrayList<>();
         initData();
+        WorldCovidService.initData();
         CountryUtil.initCountry();
         export();
     }
 
     public static void initData() {
 
-        String fileName = "/Users/mukong/Desktop/covid/recovered.xlsx";
+        String fileName = "/Users/mukong/Desktop/covid/recovered_global.xlsx";
 
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
         EasyExcel.read(fileName, new RecoveredDataListener()).sheet().doRead();
@@ -65,7 +69,7 @@ public class RecoveredCovidService {
     private static List<String> getHeader() {
 
         LocalDate start = LocalDate.of(2020, 1, 21);
-        LocalDate end = LocalDate.of(2020, 10, 12);
+        LocalDate end = LocalDate.of(2020, 10, 13);
 
         List<String> headers = new ArrayList<>();
         headers.add("state");
@@ -81,13 +85,17 @@ public class RecoveredCovidService {
     public static void export(){
 
         // 文件输出位置
-        String outPath = "/Users/mukong/Desktop/covid/recovered-export.xlsx";
+        String outPath = "/Users/mukong/Desktop/covid/recovered-rate.xlsx";
 
         try {
             // 所有行的集合
             List<List<Object>> list = new ArrayList<>();
-            Map<String, List<Map<Integer, String>>> map = RecoveredDataListener.list.stream().collect(Collectors.groupingBy(x -> x.get(0)));
-            map.forEach((k, v) -> {
+            Map<String, Map<Integer, String>> confirmMap = WorldConfirmedDataListener.list.stream()
+                .collect(Collectors.toMap(x -> x.get(0), Function.identity()));
+            Map<String, List<Map<Integer, String>>> recoveredMap = RecoveredDataListener.list.stream()
+                .filter(x -> Integer.parseInt(x.get(260)) >100000)
+                .collect(Collectors.groupingBy(x -> x.get(0)));
+            recoveredMap.forEach((k, v) -> {
                 if (filter.contains(k)) {
                     return;
                 }
@@ -114,18 +122,41 @@ public class RecoveredCovidService {
                 row.add("");
                 row.add(pair.right);
 
-                int size = v.get(0).size();
+                int size = v.get(0).size() - 1;
+                if ("US".equals(k)) {
+                    k = "United States";
+                }
+                Map<Integer, String> confirm = confirmMap.get(k);
+                if (confirm == null) {
+                    log.error("confirm null, k:{}", k);
+                    return;
+                }
+                confirm.remove(0);
+
                 for (int i=1; i<=size; i++) {
                     int finalI = i;
-                    AtomicInteger sum = new AtomicInteger();
+                    AtomicInteger recoveredSum = new AtomicInteger();
                     v.forEach(y -> {
                         y.remove(0);
                         if (y.get(finalI) != null) {
                             int tmp = Integer.parseInt(y.get(finalI));
-                            sum.addAndGet(tmp);
+                            recoveredSum.addAndGet(tmp);
                         }
                     });
-                    row.add(sum.get());
+
+                    if (confirm.get(i) == null) {
+                        log.error("error null, k:{}", k);
+                        row.add(0);
+                    } else {
+                        int confirmedNum = Integer.parseInt(confirm.get(i));
+
+                        if (confirmedNum != 0) {
+                            BigDecimal div = NumberUtil.div(BigDecimal.valueOf(recoveredSum.get()), BigDecimal.valueOf(confirmedNum), 2);
+                            row.add(div.doubleValue() * 100);
+                        } else {
+                            row.add(0);
+                        }
+                    }
                 }
 
                 list.add(row);

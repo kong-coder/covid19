@@ -6,7 +6,11 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
-import com.covid.*;
+import com.covid.CountryUtil;
+import com.covid.DateUtil;
+import com.covid.EsayIndiaCovidService;
+import com.covid.ImportData;
+import com.covid.UsCovidService;
 import com.google.common.collect.Lists;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -43,18 +47,15 @@ public class WorldCovidService {
     public static void main(String[] args) {
         importDataList = new ArrayList<>();
         initData();
-        UsCovidService.init();
-        EsayIndiaCovidService.init();
         CountryUtil.initCountry();
-        export();
     }
 
     public static void initData() {
 
-        String fileName = "/Users/yanhom/Desktop/covid/world.xlsx";
+        String fileName = "/Users/mukong/Desktop/covid/world-all.xlsx";
 
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
-        EasyExcel.read(fileName, new NoModelDataListener()).sheet().doRead();
+        EasyExcel.read(fileName, new WorldConfirmedDataListener()).sheet().doRead();
     }
 
     private static List<String> getHeader() {
@@ -80,7 +81,7 @@ public class WorldCovidService {
         try {
             // 所有行的集合
             List<List<Object>> list = new ArrayList<>();
-            NoModelDataListener.list.forEach(x -> {
+            WorldConfirmedDataListener.list.forEach(x -> {
 
                 // 第 n 行的数据
                 String code = x.get(0);

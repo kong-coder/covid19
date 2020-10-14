@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service;
  * @author Jiaju Zhuang
  */
 @Service
-public class NoModelDataListener extends AnalysisEventListener<Map<Integer, String>> {
+public class WorldConfirmedDataListener extends AnalysisEventListener<Map<Integer, String>> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NoModelDataListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorldConfirmedDataListener.class);
 
     public static final List<Map<Integer, String>> list = new ArrayList<>();
 
