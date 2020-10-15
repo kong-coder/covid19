@@ -51,7 +51,7 @@ public class WorldVsUsVsIndiaCovidService {
 
     public static void initData() {
 
-        String fileName = "/Users/yanhom/Desktop/covid/world.xlsx";
+        String fileName = "/Users/mukong/Desktop/covid/total_cases.xlsx";
 
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
         EasyExcel.read(fileName, new WorldConfirmedDataListener()).sheet().doRead();
@@ -60,7 +60,7 @@ public class WorldVsUsVsIndiaCovidService {
     private static List<String> getHeader() {
 
         LocalDate start = LocalDate.of(2019, 12, 30);
-        LocalDate end = LocalDate.of(2020, 10, 12);
+        LocalDate end = LocalDate.of(2020, 10, 15);
 
         List<String> headers = new ArrayList<>();
         headers.add("state");
@@ -75,7 +75,7 @@ public class WorldVsUsVsIndiaCovidService {
     public static void export(){
 
         // 文件输出位置
-        String outPath = "/Users/yanhom/Desktop/covid/all-total-export.xlsx";
+        String outPath = "/Users/mukong/Desktop/covid/total-confirmed.xlsx";
 
         try {
             // 所有行的集合
@@ -101,6 +101,7 @@ public class WorldVsUsVsIndiaCovidService {
 
                 if (StringUtils.isBlank(pair.right)) {
                     LOG.error("code:{}, countryName:{}, flag:{}", code, pair.left, pair.right);
+                    return;
                 }
 
                 x.remove(0);

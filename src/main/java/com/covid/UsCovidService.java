@@ -49,7 +49,7 @@ public class UsCovidService {
 
         try{
             ExcelBoot
-                .ImportBuilder(new FileInputStream(new File("/Users/yanhom/Desktop/covid/us-state.xlsx")), ImportData.class)
+                .ImportBuilder(new FileInputStream(new File("/Users/mukong/Desktop/covid/us-state.xlsx")), ImportData.class)
                 .importExcel(new ImportFunction<ImportData>() {
 
                     @Override
@@ -75,7 +75,7 @@ public class UsCovidService {
     private static List<String> getHeader() {
 
         LocalDate start = LocalDate.of(2019, 12, 30);
-        LocalDate end = LocalDate.of(2020, 10, 12);
+        LocalDate end = LocalDate.of(2020, 10, 15);
 
         List<String> headers = new ArrayList<>();
         headers.add("state");
@@ -89,7 +89,7 @@ public class UsCovidService {
     private static List<Integer> getIntegerHeader() {
 
         LocalDate start = LocalDate.of(2019, 12, 30);
-        LocalDate end = LocalDate.of(2020, 10, 12);
+        LocalDate end = LocalDate.of(2020, 10, 15);
 
         List<Integer> headers = new ArrayList<>();
         do {
