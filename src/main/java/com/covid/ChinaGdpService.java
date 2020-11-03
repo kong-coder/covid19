@@ -1,4 +1,4 @@
-package com.covid.easyexcel;
+package com.covid;
 
 
 import com.alibaba.excel.EasyExcel;
@@ -6,11 +6,10 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
-import com.covid.*;
+import com.covid.easyexcel.WorldConfirmedDataListener;
 import com.google.common.collect.Lists;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -24,95 +23,62 @@ import org.springframework.stereotype.Service;
  * @author mukong
  */
 @Service
-public class WorldVsUsVsIndiaCovidService {
+public class ChinaGdpService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(WorldVsUsVsIndiaCovidService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ChinaGdpService.class);
 
     private static List<ImportData> importDataList;
 
     private static final List<String> filter = Lists.newArrayList("International");
 
-    @PostConstruct
-    public void init() {
-        importDataList = new ArrayList<>();
-        initData();
-        CountryUtil.initCountry();
-        export();
-    }
 
     public static void main(String[] args) {
         importDataList = new ArrayList<>();
         initData();
-        UsCovidService.init();
-        EsayIndiaCovidService.init();
         CountryUtil.initCountry();
         export();
     }
 
     public static void initData() {
 
-        String fileName = "/Users/mukong/Desktop/covid/world-all.xlsx";
+        String fileName = "/Users/mukong/Desktop/covid/china-gdp-source.xlsx";
 
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
         EasyExcel.read(fileName, new WorldConfirmedDataListener()).sheet().doRead();
     }
 
     private static List<String> getHeader() {
-
-        LocalDate start = LocalDate.of(2019, 12, 30);
-        LocalDate end = LocalDate.of(2020, 10, 17);
-
         List<String> headers = new ArrayList<>();
-        headers.add("state");
+        headers.add("province");
         headers.add("flag");
+        int year = 2005;
         do {
-            start = start.plusDays(1);
-            headers.add(DateUtil.stringYMD(start));
-        } while (start.isBefore(end));
+            for (int i=1;i <=4;i++) {
+                headers.add(year + "年Q" + i);
+            }
+            year++;
+        } while (year <= 2020);
         return headers;
     }
 
     public static void export(){
 
         // 文件输出位置
-        String outPath = "/Users/mukong/Desktop/covid/total-confirmed.xlsx";
+        String outPath = "/Users/mukong/Desktop/covid/china-gdp-target.xlsx";
 
         try {
             // 所有行的集合
             List<List<Object>> list = new ArrayList<>();
             WorldConfirmedDataListener.list.forEach(x -> {
 
-                // 第 n 行的数据
-                String code = x.get(0);
-                if (filter.contains(code)) {
-                    return;
-                }
-
                 List<Object> row = new ArrayList<>();
-                ImmutablePair<String, String> pair = CountryUtil.getTwo(code);
-                if (pair == null) {
-                    return;
+                row.add(x.get(0));
+                row.add("");
+                for (int i = 62; i >=1; i--) {
+                    row.add(x.get(i));
                 }
-
-                if (StringUtils.isBlank(pair.left)) {
-                   // LOG.error("code:{}, countryName:{}", code, pair.left);
-                    return;
-                }
-
-                if (StringUtils.isBlank(pair.right)) {
-                    LOG.error("code:{}, countryName:{}, flag:{}", code, pair.left, pair.right);
-                    return;
-                }
-
-                x.remove(0);
-                row.add(pair.left);
-                row.add(pair.right);
-                x.forEach((k, v) -> row.add(v));
                 list.add(row);
             });
-
-            list.addAll(UsCovidService.preExport());
-            list.addAll(EsayIndiaCovidService.preExport());
 
             ExcelWriter excelWriter = EasyExcelFactory.getWriter(new FileOutputStream(outPath));
             // 表单

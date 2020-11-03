@@ -1,7 +1,9 @@
 package com.covid;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.fastjson.JSONObject;
 import com.covid.easyexcel.FlagDataListener;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.HashMap;
@@ -65,8 +67,13 @@ public class CountryUtil {
             countryMap.put(obj.getDisplayCountry(Locale.ENGLISH), obj.getDisplayCountry(Locale.CHINA));
         }
         initFlag();
+        System.out.println(JSONObject.toJSONString(countryMap));
 
-        System.out.println("countryMap" + countryMap);
+    }
+
+    public static void main(String[] args) {
+        //
+        initCountry();
     }
 
     public static void initFlag() {

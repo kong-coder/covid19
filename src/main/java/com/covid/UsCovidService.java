@@ -75,7 +75,7 @@ public class UsCovidService {
     private static List<String> getHeader() {
 
         LocalDate start = LocalDate.of(2019, 12, 30);
-        LocalDate end = LocalDate.of(2020, 10, 15);
+        LocalDate end = LocalDate.of(2020, 10, 17);
 
         List<String> headers = new ArrayList<>();
         headers.add("state");
@@ -89,7 +89,7 @@ public class UsCovidService {
     private static List<Integer> getIntegerHeader() {
 
         LocalDate start = LocalDate.of(2019, 12, 30);
-        LocalDate end = LocalDate.of(2020, 10, 15);
+        LocalDate end = LocalDate.of(2020, 10, 17);
 
         List<Integer> headers = new ArrayList<>();
         do {

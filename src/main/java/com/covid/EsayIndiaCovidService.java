@@ -73,7 +73,7 @@ public class EsayIndiaCovidService {
 //        LocalDate end = LocalDate.of(2020, 9, 20);
 
         LocalDate start = LocalDate.of(2019, 12, 30);
-        LocalDate end = LocalDate.of(2020, 10, 15);
+        LocalDate end = LocalDate.of(2020, 10, 17);
 
         List<String> headers = new ArrayList<>();
         headers.add("state");
@@ -88,7 +88,7 @@ public class EsayIndiaCovidService {
     private static List<Integer> getIntegerHeader() {
 
         LocalDate start = LocalDate.of(2019, 12, 30);
-        LocalDate end = LocalDate.of(2020, 10, 15);
+        LocalDate end = LocalDate.of(2020, 10, 17);
 
         List<Integer> headers = new ArrayList<>();
         do {
