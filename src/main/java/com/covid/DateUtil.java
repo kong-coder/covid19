@@ -53,6 +53,11 @@ public class DateUtil {
         return formatter.format(localDate);
     }
 
+    public static String stringMD(LocalDate localDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd");
+        return formatter.format(localDate);
+    }
+
     public static Integer integerYMD(LocalDate localDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         return Integer.valueOf(formatter.format(localDate));

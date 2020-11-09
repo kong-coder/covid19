@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -48,11 +49,12 @@ public class WorldCovidService {
         importDataList = new ArrayList<>();
         initData();
         CountryUtil.initCountry();
+        export();
     }
 
     public static void initData() {
 
-        String fileName = "/Users/mukong/Desktop/covid/world-all.xlsx";
+        String fileName = "/Users/mukong/Desktop/covid/world_new_case.xlsx";
 
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
         EasyExcel.read(fileName, new WorldConfirmedDataListener()).sheet().doRead();
@@ -60,15 +62,15 @@ public class WorldCovidService {
 
     private static List<String> getHeader() {
 
-        LocalDate start = LocalDate.of(2019, 12, 30);
-        LocalDate end = LocalDate.of(2020, 10, 12);
+        LocalDate start = LocalDate.of(2019, 12, 31);
+        LocalDate end = LocalDate.of(2020, 11, 10);
 
         List<String> headers = new ArrayList<>();
         headers.add("state");
         headers.add("flag");
         do {
-            start = start.plusDays(1);
-            headers.add(DateUtil.stringYMD(start));
+            headers.add(DateUtil.stringMD(start) + "~" + DateUtil.stringMD(start.plusDays(7)));
+            start = start.plusDays(7);
         } while (start.isBefore(end));
         return headers;
     }
@@ -76,7 +78,7 @@ public class WorldCovidService {
     public static void export(){
 
         // 文件输出位置
-        String outPath = "/Users/yanhom/Desktop/covid/all-total-export.xlsx";
+        String outPath = "/Users/mukong/Desktop/covid/world_new_case_export.xlsx";
 
         try {
             // 所有行的集合
@@ -96,23 +98,29 @@ public class WorldCovidService {
                 }
 
                 if (StringUtils.isBlank(pair.left)) {
-                   // LOG.error("code:{}, countryName:{}", code, pair.left);
+                    LOG.error("code:{}, countryName:{}", code, pair.left);
                     return;
                 }
 
                 if (StringUtils.isBlank(pair.right)) {
                     LOG.error("code:{}, countryName:{}, flag:{}", code, pair.left, pair.right);
+                    return;
                 }
 
                 x.remove(0);
                 row.add(pair.left);
                 row.add(pair.right);
-                x.forEach((k, v) -> row.add(v));
+                AtomicInteger sum = new AtomicInteger();
+                x.forEach((k, v) -> {
+                    if (k % 7 == 0) {
+                        row.add(sum.get() / 7);
+                        sum.set(0);
+                    } else {
+                        sum.addAndGet(Integer.parseInt(v));
+                    }
+                });
                 list.add(row);
             });
-
-            list.addAll(UsCovidService.preExport());
-            list.addAll(EsayIndiaCovidService.preExport());
 
             ExcelWriter excelWriter = EasyExcelFactory.getWriter(new FileOutputStream(outPath));
             // 表单
