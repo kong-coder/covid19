@@ -1,7 +1,9 @@
 package com.covid;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.fastjson.JSONObject;
 import com.covid.easyexcel.FlagDataListener;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.HashMap;
@@ -41,7 +43,19 @@ public class CountryUtil {
         countryMap.put("Korea, Rep.", "韩国");
         countryMap.put("Lao PDR", "老挝");
         countryMap.put("Korea, Dem. People’s Rep.", "朝鲜");
+        countryMap.put("US", "美国");
+        countryMap.put("us", "美国");
+        countryMap.put("Korea, South", "韩国");
+        countryMap.put("Czechia", "捷克");
+        countryMap.put("Congo (Brazzaville)", "刚果共和国");
+        countryMap.put("North Macedonia", "北马其顿共和国");
+        countryMap.put("Burma", "缅甸");
 
+        flagMap.put("US", "https://www.countryflags.io/US/shiny/64.png");
+        flagMap.put("Korea, South", "https://www.countryflags.io/kr/flat/64.png");
+        flagMap.put("Czechia", "https://www.countryflags.io/CZ/flat/64.png");
+        flagMap.put("Czech Republic", "https://www.countryflags.io/CZ/flat/64.png");
+        flagMap.put("Burma", "https://www.countryflags.io/MM/shiny/64.png");
     }
 
     public static void initCountry() {
@@ -53,13 +67,18 @@ public class CountryUtil {
             countryMap.put(obj.getDisplayCountry(Locale.ENGLISH), obj.getDisplayCountry(Locale.CHINA));
         }
         initFlag();
+        System.out.println(JSONObject.toJSONString(countryMap));
 
-        System.out.println("countryMap" + countryMap);
+    }
+
+    public static void main(String[] args) {
+        //
+        initCountry();
     }
 
     public static void initFlag() {
 
-        String fileName = "/Users/yanhom/Desktop/covid/flags.xlsx";
+        String fileName = "/Users/mukong/Desktop/covid/flags.xlsx";
 
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
         EasyExcel.read(fileName, new FlagDataListener()).sheet().doRead();
@@ -79,7 +98,11 @@ public class CountryUtil {
             return null;
         }
         countryMap.remove("Taiwan");
-        return new ImmutablePair<>(countryMap.get(name), flagMap.get(name));
+        String countryName = countryMap.get(name);
+        if ("阿拉伯联合酋长国".equals(countryName)) {
+            countryName = "阿联酋";
+        }
+        return new ImmutablePair<>(countryName, flagMap.get(name));
     }
 
 }
