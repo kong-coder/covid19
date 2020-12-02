@@ -75,5 +75,4 @@ public class UsStateUtil {
     public static String getStateName(String state) {
         return stateMap.get(state);
     }
-
 }
