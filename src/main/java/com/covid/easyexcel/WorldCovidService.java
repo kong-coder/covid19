@@ -54,7 +54,7 @@ public class WorldCovidService {
 
     public static void initData() {
 
-        String fileName = "/Users/mukong/Desktop/covid/world_new_case.xlsx";
+        String fileName = "/Users/yanhom/Desktop/covid/covid-total-11-12.xlsx";
 
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
         EasyExcel.read(fileName, new WorldConfirmedDataListener()).sheet().doRead();
@@ -62,8 +62,8 @@ public class WorldCovidService {
 
     private static List<String> getHeader() {
 
-        LocalDate start = LocalDate.of(2019, 12, 31);
-        LocalDate end = LocalDate.of(2020, 11, 10);
+        LocalDate start = LocalDate.of(2019, 12, 30);
+        LocalDate end = LocalDate.of(2020, 11, 13);
 
         List<String> headers = new ArrayList<>();
         headers.add("state");
@@ -78,7 +78,7 @@ public class WorldCovidService {
     public static void export(){
 
         // 文件输出位置
-        String outPath = "/Users/mukong/Desktop/covid/world_new_case_export.xlsx";
+        String outPath = "/Users/yanhom/Desktop/covid/export-11-12.xlsx";
 
         try {
             // 所有行的集合

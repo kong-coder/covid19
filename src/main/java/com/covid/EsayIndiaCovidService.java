@@ -62,18 +62,15 @@ public class EsayIndiaCovidService {
     }
 
     public static void initData() {
-        String indiaFileName = "/Users/mukong/Desktop/covid/india-state.xlsx";
+        String indiaFileName = "/Users/yanhom/Desktop/covid/india-state-11-12.xlsx";
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
         EasyExcel.read(indiaFileName, new IndiaDataListener()).sheet().doRead();
     }
 
     private static List<String> getHeader() {
 
-//        LocalDate start = LocalDate.of(2020, 2, 25);
-//        LocalDate end = LocalDate.of(2020, 9, 20);
-
         LocalDate start = LocalDate.of(2019, 12, 30);
-        LocalDate end = LocalDate.of(2020, 10, 17);
+        LocalDate end = LocalDate.of(2020, 11, 13);
 
         List<String> headers = new ArrayList<>();
         headers.add("state");
@@ -88,7 +85,7 @@ public class EsayIndiaCovidService {
     private static List<Integer> getIntegerHeader() {
 
         LocalDate start = LocalDate.of(2019, 12, 30);
-        LocalDate end = LocalDate.of(2020, 10, 17);
+        LocalDate end = LocalDate.of(2020, 11, 13);
 
         List<Integer> headers = new ArrayList<>();
         do {
