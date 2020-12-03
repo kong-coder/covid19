@@ -46,7 +46,7 @@ public class ChinaGdpService {
         String fileName = "/Users/yanhom/Desktop/china-gdp.xlsx";
 
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
-        EasyExcel.read(fileName, new NoModelDataListener()).sheet().doRead();
+        EasyExcel.read(fileName, new GdpDataListener()).sheet().doRead();
     }
 
     private static List<String> getHeader() {
@@ -71,7 +71,7 @@ public class ChinaGdpService {
             // 所有行的集合
             List<List<Object>> list = new ArrayList<>();
 
-            List<Map<Integer, String>> sourceList = NoModelDataListener.list;
+            List<Map<Integer, String>> sourceList = GdpDataListener.list;
             sourceList.forEach(x -> {
                 List<Object> row = new ArrayList<>();
                 row.add(x.get(0));

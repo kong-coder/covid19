@@ -53,7 +53,7 @@ public class RecoveredCovidService {
     public static void main(String[] args) {
         importDataList = new ArrayList<>();
         initData();
-        WorldCovidService.initData();
+        WorldCovid7AvgService.initData();
         CountryUtil.initCountry();
         export();
     }

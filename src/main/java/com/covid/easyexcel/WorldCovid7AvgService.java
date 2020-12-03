@@ -8,9 +8,7 @@ import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
 import com.covid.CountryUtil;
 import com.covid.DateUtil;
-import com.covid.EsayIndiaCovidService;
 import com.covid.ImportData;
-import com.covid.UsCovidService;
 import com.google.common.collect.Lists;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -29,9 +27,9 @@ import org.springframework.stereotype.Service;
  * @author mukong
  */
 @Service
-public class WorldCovidService {
+public class WorldCovid7AvgService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(WorldCovidService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WorldCovid7AvgService.class);
 
     private static List<ImportData> importDataList;
 
