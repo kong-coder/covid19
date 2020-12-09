@@ -53,14 +53,14 @@ public class RecoveredCovidService {
     public static void main(String[] args) {
         importDataList = new ArrayList<>();
         initData();
-        WorldCovid7AvgService.initData();
+        WorldCovidCommonService.initData();
         CountryUtil.initCountry();
         export();
     }
 
     public static void initData() {
 
-        String fileName = "/Users/mukong/Desktop/covid/recovered_global.xlsx";
+        String fileName = "/Users/mukong/Desktop/covid/recovered_global-12-9.xlsx";
 
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
         EasyExcel.read(fileName, new RecoveredDataListener()).sheet().doRead();
@@ -72,13 +72,16 @@ public class RecoveredCovidService {
         LocalDate end = LocalDate.of(2020, 10, 13);
 
         List<String> headers = new ArrayList<>();
-        headers.add("state");
-        headers.add("t");
+        headers.add("name");
         headers.add("flag");
-        do {
-            start = start.plusDays(1);
-            headers.add(DateUtil.stringYMD(start));
-        } while (start.isBefore(end));
+        headers.add("value");
+        headers.add("recovered");
+        headers.add("confirm");
+        headers.add("date");
+//        do {
+//            start = start.plusDays(1);
+//            headers.add(DateUtil.stringYMD(start));
+//        } while (start.isBefore(end));
         return headers;
     }
 
@@ -93,15 +96,13 @@ public class RecoveredCovidService {
             Map<String, Map<Integer, String>> confirmMap = WorldConfirmedDataListener.list.stream()
                 .collect(Collectors.toMap(x -> x.get(0), Function.identity()));
             Map<String, List<Map<Integer, String>>> recoveredMap = RecoveredDataListener.list.stream()
-                .filter(x -> Integer.parseInt(x.get(260)) >100000)
+//                .filter(x -> Integer.parseInt(x.get(260)) >70000)
                 .collect(Collectors.groupingBy(x -> x.get(0)));
             recoveredMap.forEach((k, v) -> {
                 if (filter.contains(k)) {
                     return;
                 }
 
-
-                List<Object> row = new ArrayList<>();
                 ImmutablePair<String, String> pair = CountryUtil.getTwo(k);
                 if (pair == null) {
                     log.error("no country, code:{}", k);
@@ -118,21 +119,27 @@ public class RecoveredCovidService {
                     return;
                 }
 
-                row.add(pair.left);
-                row.add("");
-                row.add(pair.right);
-
                 int size = v.get(0).size() - 1;
                 if ("US".equals(k)) {
                     k = "United States";
+                }
+                if ("Korea, South".equals(k)) {
+                    k = "South Korea";
+                }
+                if ("Czechia".equals(k)) {
+                    k = "Czech Republic";
                 }
                 Map<Integer, String> confirm = confirmMap.get(k);
                 if (confirm == null) {
                     log.error("confirm null, k:{}", k);
                     return;
                 }
+                if (Integer.parseInt(confirm.get(322)) <70000) {
+                    return;
+                }
                 confirm.remove(0);
 
+                LocalDate start = LocalDate.of(2020, 1, 22);
                 for (int i=1; i<=size; i++) {
                     int finalI = i;
                     AtomicInteger recoveredSum = new AtomicInteger();
@@ -144,8 +151,13 @@ public class RecoveredCovidService {
                         }
                     });
 
+                    List<Object> row = new ArrayList<>();
+                    row.add(pair.left);
+                    row.add(pair.right);
                     if (confirm.get(i) == null) {
                         log.error("error null, k:{}", k);
+                        row.add(0);
+                        row.add(0);
                         row.add(0);
                     } else {
                         int confirmedNum = Integer.parseInt(confirm.get(i));
@@ -153,13 +165,18 @@ public class RecoveredCovidService {
                         if (confirmedNum != 0) {
                             BigDecimal div = NumberUtil.div(BigDecimal.valueOf(recoveredSum.get()), BigDecimal.valueOf(confirmedNum), 2);
                             row.add(div.doubleValue() * 100);
+                            row.add(recoveredSum.get());
+                            row.add(confirmedNum);
                         } else {
+                            row.add(0);
+                            row.add(0);
                             row.add(0);
                         }
                     }
+                    row.add(DateUtil.stringYMD(start));
+                    start = start.plusDays(1);
+                    list.add(row);
                 }
-
-                list.add(row);
             });
 
             ExcelWriter excelWriter = EasyExcelFactory.getWriter(new FileOutputStream(outPath));
