@@ -92,6 +92,7 @@ public class IndiaStateUtil {
 
         stateMap.put("State Unassigned", "其他地区");
         stateMap.put("UN", "其他地区");
+        //stateMap.put("India", "印度");
 
        // stateMap.put("India", "印度");
 
@@ -99,6 +100,10 @@ public class IndiaStateUtil {
 
     public static String getStateName(String state) {
         return stateMap.get(state);
+    }
+
+    public static String getFlag() {
+        return "https://flagpedia.net/data/flags/h80/in.png";
     }
 
 }

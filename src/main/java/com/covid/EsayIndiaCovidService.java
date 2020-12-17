@@ -38,7 +38,7 @@ public class EsayIndiaCovidService {
 
     private static final Logger LOG = LoggerFactory.getLogger(EsayIndiaCovidService.class);
 
-    private static List<ImportData> importDataList;
+    public static List<ImportData> importDataList;
 
     @PostConstruct
     public static void init() {
@@ -49,6 +49,7 @@ public class EsayIndiaCovidService {
             importData.setDate(x.get(0));
             importData.setState(x.get(1));
             importData.setNumber(Integer.parseInt(x.get(2)));
+            importData.setRecovered(Integer.parseInt(x.get(3)));
             importDataList.add(importData);
         });
     }
@@ -62,7 +63,7 @@ public class EsayIndiaCovidService {
     }
 
     public static void initData() {
-        String indiaFileName = "/Users/yanhom/Desktop/covid/india-state-11-12.xlsx";
+        String indiaFileName = "/Users/mukong/Desktop/covid/india-12-17.xlsx";
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
         EasyExcel.read(indiaFileName, new IndiaDataListener()).sheet().doRead();
     }

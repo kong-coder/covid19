@@ -36,7 +36,7 @@ public class IndiaCovidService {
 
     private static final Logger LOG = LoggerFactory.getLogger(IndiaCovidService.class);
 
-    private static List<IndiaImportData> importDataList;
+    public static List<IndiaImportData> importDataList;
 
     @PostConstruct
     public static void init() {
@@ -56,7 +56,7 @@ public class IndiaCovidService {
 
         try{
             ExcelBoot
-                .ImportBuilder(new FileInputStream(new File("/Users/yanhom/Desktop/covid/india.xlsx")), IndiaImportData.class)
+                .ImportBuilder(new FileInputStream(new File("/Users/mukong/Desktop/covid/india-12-17.xlsx")), IndiaImportData.class)
                 .importExcel(new ImportFunction<IndiaImportData>() {
 
                     @Override

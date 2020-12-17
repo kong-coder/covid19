@@ -69,10 +69,16 @@ public class UsStateUtil {
         stateMap.put("AS", "美属萨摩亚");
         stateMap.put("GU", "关岛");
         stateMap.put("DC", "华盛顿特区");
+
+        stateMap.put("US", "美国");
         //stateMap.put("United States", "美国");
     }
 
     public static String getStateName(String state) {
         return stateMap.get(state);
+    }
+
+    public static String getFlag() {
+        return "https://flagpedia.net/data/flags/h80/us.png";
     }
 }

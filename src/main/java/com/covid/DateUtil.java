@@ -1,7 +1,10 @@
 package com.covid;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * @author mukong
@@ -61,5 +64,18 @@ public class DateUtil {
     public static Integer integerYMD(LocalDate localDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         return Integer.valueOf(formatter.format(localDate));
+    }
+
+    public static String strToDateFormat(String date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+        formatter.setLenient(false);
+        Date newDate= null;
+        try {
+            newDate = formatter.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        formatter = new SimpleDateFormat("yyyy-MM-dd");
+        return formatter.format(newDate);
     }
 }
